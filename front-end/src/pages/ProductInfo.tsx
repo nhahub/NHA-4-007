@@ -1,6 +1,9 @@
 import "../Style/profile.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Fragment, useState, useEffect } from "react";
+import { CART_API } from '../utils/constants'; // api call
+import { PRODUCT_API } from '../utils/constants'; // api call
+
 
 function ProductInfo() {
   const [inputValue, setInputValue] = useState({});
@@ -9,7 +12,7 @@ function ProductInfo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/products/${productID}`, {
+        const response = await fetch(`${PRODUCT_API}/products/${productID}`, { // api
           headers: {
             "Content-Type": "application/json",
           },
@@ -29,7 +32,7 @@ function ProductInfo() {
     const token = localStorage.getItem("token");
     if (token) {
       console.log("Add to cart");
-      fetch(`http://localhost:3003/cart/${productID}`, {
+      fetch(`${CART_API}/cart/${productID}`, { // api
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +53,7 @@ function ProductInfo() {
         });
     }
 
-  
+
 
   };
 

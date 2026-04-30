@@ -19,6 +19,6 @@ app.use((req, res, next) => {
 });
 app.use("/cart", require("./routes/cartRouter"))
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
 });

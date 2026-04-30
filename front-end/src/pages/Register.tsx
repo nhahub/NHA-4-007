@@ -1,5 +1,6 @@
 import "../Style/Register.css";
 import { useState } from "react";
+import { USER_API } from '../utils/constants'; // api call
 function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -14,14 +15,14 @@ function Register() {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3001/users", {
+      const response = await fetch(`${USER_API}/users`, { // api call
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ email, password, firstName, lastName, age, phone, gender })
       });
-  
+
       if (response.ok) {
         console.log("Registered successful");
         window.location.href = "/";
@@ -47,12 +48,12 @@ function Register() {
     } else {
       alert("passwords doesn't match");
     }
-  }
+  }// api call
   return (
     <div className="bg-img">
       <div className="registerContent">
         <header>Register Form</header>
-        <form action="http://localhost:3001/users" method="post" onSubmit={handleSubmit}>
+        <form action={`${USER_API}/users`} method="post" onSubmit={handleSubmit}>
           <div className="row">
             <div className="col">
               <h6>First name</h6>

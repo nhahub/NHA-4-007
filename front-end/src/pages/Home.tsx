@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import "../Style/home.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Card from "../component/card";
+import { PRODUCT_API } from '../utils/constants'; // api call
 
 function Home() {
   const [data, setData] = useState([]);
@@ -15,7 +16,7 @@ function Home() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3002/products", {
+      const response = await fetch(`${PRODUCT_API}/products`, { // api call
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,7 +44,7 @@ function Home() {
     if (selectedCategory === "idle") {
       fetchData();
     } else {
-      fetch(`http://localhost:3002/filter/category/${selectedCategory}`, {
+      fetch(`${PRODUCT_API}/filter/category/${selectedCategory}`, { // api call
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +103,7 @@ function Home() {
                             <option value="Shooter">Shooter</option>
                           </select>
                           <span className="margleft"><i className="fa fa-search"></i></span>
-                          
+
                           <input
                             className="newSearch"
                             type="text"

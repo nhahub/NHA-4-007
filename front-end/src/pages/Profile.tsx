@@ -8,6 +8,7 @@ import clip3 from "../assets/clip-03.jpg";
 import clip4 from "../assets/clip-04.jpg";
 import profile from "../assets/profile.jpg";
 import profileg from "../assets/profileGirl.jpg";
+import { USER_API } from '../utils/constants'; // api call
 import { useState, useEffect, Fragment } from "react";
 function Profile() {
 
@@ -17,7 +18,7 @@ function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:3001/users/", {
+      fetch(`${USER_API}/users/`, { // api
         method: "GET",
         headers: {
           "Content-Type": "application/json",

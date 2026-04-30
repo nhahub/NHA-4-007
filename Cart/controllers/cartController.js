@@ -61,6 +61,7 @@ const { json } = require('express');
 const CartModel = require('../models/cartModel');
 const ProductModel = require('../models/productModel');
 const axios = require('axios'); //
+const PRODUCT_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3002';
 
 
 
@@ -75,7 +76,7 @@ const getCartProducts = async (req, res) => {
 
     try {
         // We "ask" the Product Service for the data via HTTP
-        const response = await axios.get('http://localhost:3002/products');
+        const response = await axios.get(`${PRODUCT_URL}/products`);
         const allProducts = response.data;
 
         // Filter the products to only include what is in the cart
