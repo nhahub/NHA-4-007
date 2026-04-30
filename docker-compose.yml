@@ -1,0 +1,111 @@
+networks:
+  ecommerce-net:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    networks:
+      - ecommerce-net
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - user-services
+      - product-service
+      - cart-service
+    restart: unless-stopped
+
+  frontend:
+    build:
+      dockerfile: ./front-end
+      args: VITE_API_IP=23.20.116.201
+    container_name: frontend
+    networks:
+      - ecommerce-net
+    environment:
+      - VITE_API_IP=23.20.116.201
+    restart: unless-stopped
+
+  user-service:
+    build: ./User
+    container_name: user-service
+    networks:
+      - ecommerce-net
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongodb:27017/user_db
+      - REDIS_URL=redis://redis:6379
+      - ACCESS_TOKEN=prod_secret
+  depends_on:
+    - mongodb:
+        condition: service_healthy
+    - redis:
+        condition: service_healthy
+
+  product-service:
+    build: ./Product
+    container_name: product-service
+    networks:
+      - ecommerce-net
+    environment:
+      - PORT=3002
+      - MONGO_URI=mongodb://mongodb:27017/product_db
+      - REDIS_URL=redis://redis:6379
+      - ACCESS_TOKEN=prod_secret
+    depends_on:
+      - mongodb:
+          condition: service_healthy
+      - redis:
+          condition: service_healthy
+
+  cart-service:
+    build: ./Cart
+    container_name: cart-service
+    networks:
+      - ecommerce-net
+    environment:
+      - PORT=3003
+      - MONGO_URI=mongodb://127.0.0.1:27017/user_db
+      - REDIS_URL=redis://redis:6379
+      - PRODUCT_SERVICE_URL=http://product-service:3002
+      - ACCESS_TOKEN=prod_secret
+    depends_on:
+      - mongodb:
+          condition: service_healthy
+      - redis:
+          condition: service_healthy
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    networks:
+      - ecommerce-net
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", 'db.runCommand("ping").ok' ]
+      interval: 15s
+      timeout: 5s
+      retries: 2
+
+  redis:
+    image: redis:8.8-m03
+    container_name: redis
+    networks:
+      - ecommerce-net
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 15s
+      timeout: 5s
+      retries: 2
+
+volumes:
+  - mongo_data: {}
