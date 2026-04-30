@@ -59,20 +59,3 @@ http://localhost:5173/
 ```
 ## Products json file
 - [Products json file](https://github.com/Andrewaziz99/E-Commerce_Web_Application/blob/main/products.json)
-
-## Technologies
-- [React vite](https://vitejs.dev/)
-- [Node.js](https://nodejs.org/en/)
-- [Express](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Microservices Architecture]()
-
-## Contributers 
-- [Thomas Maged](https://github.com/Thomas-Maged)
-- [Maximous Atef](https://github.com/Maxiatef)
-- [Kirollos Nessim](https://github.com/KirollosNessem)
-- [Ramez Hesham](https://github.com/RamezHesham)
-- [Yara Wael](https://github.com/yara880)
-- [Nourhane Amir](https://github.com/NourhaneAmir)

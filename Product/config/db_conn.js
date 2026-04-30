@@ -132,10 +132,7 @@ require('dotenv').config();
 // If MONGO_URI is missing in .env, it defaults to your local Docker MongoDB.
 const connectionString = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/product_db';
 
-mongoose.connect(connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(connectionString)
     .then(() => console.log(`Connected to MongoDB at: ${connectionString.split('@').pop()}`)) // Logs location without showing password
     .catch(err => {
         console.error('Database connection error:', err.message);
