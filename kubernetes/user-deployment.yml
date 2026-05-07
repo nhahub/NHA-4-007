@@ -10,24 +10,47 @@ spec:
     matchLabels:
       app: user
   strategy:
-   type: RollingUpdate
-   rollingUpdate:
-     maxUnavailable: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: user
     spec:
       containers:
-      - image: rahmaahmed2002/depi_gp-user-service:v1
-        name: user-service
-        ports:
-        - containerPort: 3001
-        env:
-        - name: MONGO_URI
-          value: mongodb://mongodb:27017/user_db
-        - name: REDIS_URL
-          value: redis://127.0.0.1:6379
-        - name: ACCESS_TOKEN
-          value: prod_secret
-        
+        - image: rahmaahmed2002/depi_gp-user-service:v1
+          name: user-service
+          ports:
+            - containerPort: 3001
+          env:
+            - name: MONGO_URI
+              value: mongodb://mongodb:27017/user_db
+            - name: REDIS_URL
+              value: redis://127.0.0.1:6379
+            - name: ACCESS_TOKEN
+              value: prod_secret
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user
+  name: user
+spec:
+  ports:
+  - port: 3001
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: user
+  type: ClusterIP

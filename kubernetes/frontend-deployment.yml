@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - image: rahmaahmed2002/depi_gp-frontend:v3
+          name: frontend
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: frontend
+  type: ClusterIP
+

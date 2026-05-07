@@ -10,26 +10,49 @@ spec:
     matchLabels:
       app: cart
   strategy:
-   type: RollingUpdate
-   rollingUpdate:
-     maxUnavailable: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: cart
     spec:
       containers:
-      - image: rahmaahmed2002/depi_gp-cart-service:v1
-        name: cart-service
-        ports:
-        - containerPort: 3003
-        env:
-        - name: MONGO_URI
-          value: mongodb://mongodb:27017/cart_db
-        - name: REDIS_URL
-          value: redis://redis:6379
-        - name: ACCESS_TOKEN
-          value: prod_secret
-        - name: PRODUCT_SERVICE_URL
-          value: http://product:3002
-        
+        - image: rahmaahmed2002/depi_gp-cart-service:v1
+          name: cart-service
+          ports:
+            - containerPort: 3003
+          env:
+            - name: MONGO_URI
+              value: mongodb://mongodb:27017/cart_db
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: ACCESS_TOKEN
+              value: prod_secret
+            - name: PRODUCT_SERVICE_URL
+              value: http://product:3002
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cart
+  name: cart
+spec:
+  ports:
+  - port: 3003
+    protocol: TCP
+    targetPort: 3003
+  selector:
+    app: cart
+  type: ClusterIP

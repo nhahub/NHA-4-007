@@ -10,24 +10,47 @@ spec:
     matchLabels:
       app: product
   strategy:
-   type: RollingUpdate
-   rollingUpdate:
-     maxUnavailable: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: product
     spec:
       containers:
-      - image: rahmaahmed2002/depi_gp-product-service:v1
-        name: product-service
-        ports:
-        - containerPort: 3002
-        env:
-        - name: MONGO_URI
-          value: mongodb://mongodb:27017/product_db
-        - name: REDIS_URL
-          value: redis://redis:6379
-        - name: ACCESS_TOKEN
-          value: prod_secret
-        
+        - image: rahmaahmed2002/depi_gp-product-service:v1
+          name: product-service
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MONGO_URI
+              value: mongodb://mongodb:27017/product_db
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: ACCESS_TOKEN
+              value: prod_secret
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: product
+  name: product
+spec:
+  ports:
+  - port: 3002
+    protocol: TCP
+    targetPort: 3002
+  selector:
+    app: product
+  type: ClusterIP
