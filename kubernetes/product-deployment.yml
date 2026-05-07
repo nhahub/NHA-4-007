@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: product
+  name: product
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product
+  strategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - image: rahmaahmed2002/depi_gp-product-service:v1
+        name: product-service
+        ports:
+        - containerPort: 3002
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongodb:27017/product_db
+        - name: REDIS_URL
+          value: redis://redis:6379
+        - name: ACCESS_TOKEN
+          value: prod_secret
+        
