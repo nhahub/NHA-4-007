@@ -25,13 +25,25 @@ spec:
             - containerPort: 3003
           env:
             - name: MONGO_URI
-              value: mongodb://mongodb:27017/cart_db
+              valueFrom:
+                configMapKeyRef:
+                  name: ecommerce-configmap
+                  key: CART_MONGO_URI
             - name: REDIS_URL
-              value: redis://redis:6379
+              valueFrom:
+                configMapKeyRef:
+                  name: ecommerce-configmap
+                  key: REDIS_URL
             - name: ACCESS_TOKEN
-              value: prod_secret
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-secrets
+                  key: ACCESS_TOKEN
             - name: PRODUCT_SERVICE_URL
-              value: http://product:3002
+              valueFrom:
+                configMapKeyRef:
+                  name: ecommerce-configmap
+                  key: PRODUCT_SERVICE_URL
           resources:
             requests:
               memory: "200Mi"
@@ -41,7 +53,6 @@ spec:
               cpu: "500m"
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -50,9 +61,9 @@ metadata:
   name: cart
 spec:
   ports:
-  - port: 3003
-    protocol: TCP
-    targetPort: 3003
+    - port: 3003
+      protocol: TCP
+      targetPort: 3003
   selector:
     app: cart
   type: ClusterIP

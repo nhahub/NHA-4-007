@@ -14,41 +14,53 @@ spec:
         app: mongodb # has to match .spec.selector.matchLabels
     spec:
       containers:
-      - name: mongodb
-        image: mongo:7.0.5
-        ports:
-        - containerPort: 27017
-          name: mongodb
-        volumeMounts:
-        - name: mongo-data
-          mountPath: /data/db
+        - name: mongodb
+          image: mongo:7.0.5
+          ports:
+            - containerPort: 27017
+              name: mongodb
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            memory: "200Mi"
-            cpu: "200m"
-          limits:
-            memory: "500Mi"
-            cpu: "500m"
-  volumeClaimTemplates:
-  - metadata:
-      name: mongo-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+            storage: 1Gi
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb
 spec:
-  clusterIP: None  # headless service for statefulset
+  clusterIP: None # headless service for statefulset
   selector:
-    app: mongodb   
+    app: mongodb
   ports:
-  - port: 27017
-    targetPort: 27017
-    protocol: TCP
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongodb-service
+# spec:
+#   selector:
+#     app: mongodb
+#   ports:
+#     - port: 27017
+#       targetPort: 27017
+#   type: ClusterIP
