@@ -2,12 +2,12 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 
 # production dependencies only
 RUN npm install --omit=dev
 
-COPY . .
+COPY . ./
 
 # switch to non-root user
 RUN chown -R node:node /app
