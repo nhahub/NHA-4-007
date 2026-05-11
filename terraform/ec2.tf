@@ -3,6 +3,12 @@ data "aws_key_pair" "key" {
   key_pair_id = "key-0088437e537d75f65"
 }
 
+## Associate existing Elastic IP to instance
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.jenkins_instance.id
+  allocation_id = "eipalloc-00aba1125ebc82f1e"
+}
+
 resource "aws_instance" "jenkins_instance" {
   ami                         = "ami-091138d0f0d41ff90"
   instance_type               = "t3.micro"
