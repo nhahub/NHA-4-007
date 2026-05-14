@@ -21,7 +21,7 @@ services:
 
   frontend:
     build:
-      context: ./front-end
+      context: ./frontend
       dockerfile: Dockerfile
       args:
         - VITE_API_IP=23.20.116.201 # change with your IP
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   user-service:
-    build: ./User
+    build: ./user-service
     container_name: user-service
     networks:
       - ecommerce-net
@@ -45,7 +45,7 @@ services:
       - redis
 
   product-service:
-    build: ./Product
+    build: ./product-service
     container_name: product-service
     networks:
       - ecommerce-net
@@ -58,7 +58,7 @@ services:
       - mongodb
       - redis
   cart-service:
-    build: ./Cart
+    build: ./cart-service
     container_name: cart-service
     networks:
       - ecommerce-net
