@@ -17,9 +17,13 @@ resource "aws_internet_gateway" "main-gw" {
 }
 
 # Regional NAT GW
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
+
 resource "aws_nat_gateway" "nat-gw" {
-  vpc_id            = aws_vpc.main.id
-  availability_mode = "regional"
+  subnet_id = aws_subnet.public_subnet["public_subnet_1"].id
+  allocation_id = aws_eip.nat_eip.id
   tags = {
     Name = "depi NAT"
   }
@@ -40,7 +44,7 @@ resource "aws_route_table" "pub-rt" {
   }
 
   tags = {
-    Name = "depi"
+    Name = "depi public rtb"
   }
 }
 
@@ -54,7 +58,7 @@ resource "aws_route_table" "private-rt" {
   }
 
   tags = {
-    Name = "depi"
+    Name = "depi private rtb"
   }
 }
 
@@ -65,7 +69,7 @@ resource "aws_subnet" "public_subnet" {
   cidr_block        = each.value["cidr"]
   availability_zone = each.value["az"]
   tags = {
-    Name = "depi"
+    Name = "depi public subnet"
   }
 }
 
@@ -75,7 +79,7 @@ resource "aws_subnet" "private_subnet" {
   cidr_block        = each.value["cidr"]
   availability_zone = each.value["az"]
   tags = {
-    Name = "depi"
+    Name = "depi private subnet"
   }
 }
 
@@ -91,16 +95,4 @@ resource "aws_route_table_association" "private-association" {
   for_each       = aws_subnet.private_subnet
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private-rt.id
-}
-
-module "eks" {
-  source = "./modules/eks"
-  cluster_name = "ecommerce-cluster"
-  allowed_public_cidrs = ["156.218.241.139/32"] 
-  system_node_instance_type = ["t3.small"]
-  vpc_id = aws_vpc.main.id
-  subnet_ids = [aws_subnet.private_subnet["private_subnet_1"].id, aws_subnet.private_subnet["private_subnet_2"].id]
-  control_plane_subnet_ids = [aws_subnet.private_subnet["private_subnet_1"].id, aws_subnet.private_subnet["private_subnet_2"].id]
-  principal_arn = aws_iam_role.jenkins-eks.arn
-
 }

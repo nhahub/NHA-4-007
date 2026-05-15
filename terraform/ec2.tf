@@ -16,7 +16,7 @@ resource "aws_instance" "jenkins_instance" {
   vpc_security_group_ids      = [aws_security_group.jenkins_sg.id]
   associate_public_ip_address = true
   key_name                    = data.aws_key_pair.key.key_name
-  iam_instance_profile        = aws_iam_instance_profile.jenkins.id
+  #iam_instance_profile        = aws_iam_instance_profile.jenkins.id
   user_data                   = <<-EOF
     #!/bin/bash
     set -e
@@ -49,16 +49,16 @@ resource "aws_instance" "jenkins_instance" {
     systemctl enable jenkins
     
   EOF
-  
+
   tags = {
     Name = "Jenkins Server"
   }
 
   root_block_device {
-        delete_on_termination = true
-        volume_size           = 12
-        volume_type           = "gp3"
-    }
+    delete_on_termination = true
+    volume_size           = 12
+    volume_type           = "gp3"
+  }
 }
 
 
